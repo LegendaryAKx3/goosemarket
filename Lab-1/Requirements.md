@@ -7,12 +7,8 @@ In the directory Triangles-C you will see four files.  The README.md describes
 the setup.  You will need to install the Gnu C compiler.  There are various ways
 to do this but in this case rather than provide directions you are asked to seek
 out methods to do so yourself.  Given the prior setup of WSL or MacPorts,
-something along the lines of
-
-	  `apt install gcc`
-
-or
-	  `sudo port install gcc`
+something along the lines of `apt install gcc` or `sudo port install gcc`
+depending on your system.
 
 is likely the correct thing to do.
 
