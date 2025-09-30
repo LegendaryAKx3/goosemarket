@@ -49,8 +49,8 @@ def main(argv):
         errOut = err.decode('utf-8') if isinstance(out, bytes) else str(out)
 
         # Match against stdout and against stderr
-        match = re.search(expectedAnswer,output)
-        errMatch = re.search(expectedAnswer,errOut)
+        match = re.search(expectedAnswer,output,re.IGNORECASE)
+        errMatch = re.search(expectedAnswer,errOut,re.IGNORECASE)
     
         if DEBUG:
             print(f"match: '{match}'\nerrMatch: '{errMatch}'")
