@@ -9,3 +9,7 @@ Lab-1: Setting up Git, Python, Pip, Gcc, and doing basic git commands.
 Lab-2: Some basic python and pytest; start of To-Do application.
 
 Lab-3: Define requirements for To-Do application; add MySQL backend to application
+
+Lab-4: Define formal test plan and test cases for To-Do application; create initial
+test report.
+
