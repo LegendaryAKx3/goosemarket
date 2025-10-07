@@ -13,3 +13,5 @@ Lab-3: Define requirements for To-Do application; add MySQL backend to applicati
 Lab-4: Define formal test plan and test cases for To-Do application; create initial
 test report.
 
+Lab-5: Project planning and management for web-based To-Do App. Local-only web access.
+
