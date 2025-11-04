@@ -1,101 +1,143 @@
-# GooseMarket
+# GooseMarket Project Charter
+
+## Title
+**GooseMarket: UWaterloo Campus Prediction Market Platform**
+
+---
+
+## Description (Concise Overview)
+GooseMarket is a prediction market web platform for University of Waterloo students, using a fake currency called *Goose Dollars*. Students create and predict outcomes on real campus-related events (e.g., midterm averages, election results) and compete via a leaderboard. No real money is involved — users earn currency through platform activity such as logging in and participation.
+
+---
+
+## Objectives and Goals
+- Deliver an engaging and competitive student prediction platform
+- Allow users to create, predict, and resolve events tied to campus life
+- Provide group/Faculty-based communities (e.g., SE, Math, Eng groups)
+- Encourage friendly competition through leaderboards and stats
+- Offer a safe, secure, and policy-compliant web experience
+
+---
 
 ## Scope
-GooseMarket is a prediction market platform (using fake currency) designed for University of Waterloo students. It allows users to create, predict, and resolve events on real campus-related events — from midterm averages to student elections.
 
-Instead of using cryptocurrencies like other similar sites, we will create our own custom Goose Dollars that are not backed by real money. Users will have the ability to receive more Goose Dollars by consistently logging in, and other tasks. A leaderboard will be displayed with the users with the highest balances (as well as other fun stats like highest losses). Users will be able to join groups (e.g. SE30) to receive more tailored predictions.
+### In Scope
+- Web app for account creation & fake balance system
+- uWaterloo-only email signup & verification
+- Create & predict Yes/No campus-related events
+- Sorting & categories/groups for event discovery
+- Leaderboards, stats, user progression/rewards
+- Event resolution (automatic or admin-based)
+- Admin panel for moderation
+- Security: safe authentication, XSS/SQLi protections
+- Backend API + database for users, events, predictions, groups
 
-In scope:
+### Out of Scope
+- Real money or cryptocurrency integration
+- Multi-outcome events (>2 outcomes)
+- Native mobile apps (web-only experience)
 
-* Web app for account creation and fake balance management
+---
 
-* Accounts email verification, only allowing uWaterloo emails
+## Stakeholders
+- **Sponsors:** Student-run team & course/project stakeholders
+- **Users:** UWaterloo students
+- **Developers:** GooseMarket team
+- **Admins:** Selected moderators with event approval rights
 
-* Ability to create and predict events on campus-related questions (Yes/No events)
+---
 
-* Sorting of events by category to show users relevant events
+## Assumptions
+- All users have a valid `@uwaterloo.ca` email
+- Platform will operate for entertainment and academic/club purposes only
+- Students are motivated by friendly competition and leaderboard status
+- Adequate campus event data exists for meaningful predictions
 
-* Automatic or admin-based event resolution
-
-* Leaderboard and stats system to encourage engagement
-
-* Admin panel for site moderation and management
-
-* Secure backend & frontend
-
-Out of scope:
-
-* Real currency or crypto integration
-
-* Multi outcome events (more than two possible outcomes)
-
-## Objective
-GooseMarket's objective is to create a fun and competitive web application that allows users across UWaterloo to spend points on predictions about campus-related events, and compete with their friends for the top step of the leaderboard.
-
-## Deliverables
-* Frontend Web App
-    * Login / Signup
-    * Dashboard with current events
-    * Event creation and prediction interface
-    * Groups/Categories page
-    * Leaderboard
-* Backend API
-    * User management & Authentication (email verification)
-    * Event management (create, predict, resolve)
-    * Prediction resolution logic (payouts)
-    * Admin panel for moderation (e.g. approving events)
-    * User statistic tracking (for leaderboard)
-* Database
-    * Users, events, predictions, groups
-
-## Roles
-* Moosa
-    * Frontend (User & admin panels)
-    * Authentication & email verification
-* William
-    * DB security
-    * XSS and SQL injection prevention
-    * Rolling back bets after event ends
-    * Moderation/Admin panel
-* Cole
-    * Leaderboard
-    * Token economy
-* Adam
-    * Managing events (creating, placing predictions, closing, resolving)
-    * Groups / tags for events
-* Bryan
-    * User analytics
-    * Balancing token economy
-
-
-
-
-
-
-
-## Success Criteria
-
-The project is successful when:
-
-* Only @uwaterloo.ca users can sign up and verify accounts.
-* Users can create accounts, earn/spend Goose Dollars, create events, predict outcomes, and see a working leaderboard.
-* Admins can approve events, resolve outcomes, and handle disputes.
-* Token balances update correctly for bets, payouts, and reversals.
-* Security basics are met (SQL injection/XSS protection & secure auth).
-* A simple user guide or help section exists.
-
-## Risks
-
-* User Abuse / Cheating: Attempts to manipulate prediction outcomes or create spam events
-* Security Risks: Unauthorized access, bot sign-ups, SQL or XSS attacks
-* Scalability Challenges: High traffic during peak campus events (election, exam season)
-* Ethical / Policy Concerns: Risk of platform being interpreted as gambling
-* Maintenance & Moderation Load: Student-run team capacity may be limited
+---
 
 ## Constraints
+- No real-world financial value or gambling connections
+- Must follow UWaterloo policy and ethical guidelines
+- Limited moderation and development resources
+- Web-only product (desktop + mobile browser)
 
-* Only @uwaterloo.ca emails allowed
-* Fake currency system — no financial value or conversion
-* Must comply with UWaterloo policies & ethical standards
-* Web-only experience (desktop/mobile web)
-* Limited admin/moderation resources
+---
+
+## High-Level Risks
+- **User Abuse / Cheating:** Manipulating outcomes or spam events  
+- **Security Issues:** Bot accounts, SQLi, XSS, unauthorized access  
+- **Scalability:** High traffic during peak campus events  
+- **Ethical Concerns:** Misinterpretation as gambling platform  
+- **Moderation Load:** Limited admin resources  
+
+---
+
+## Roles & Responsibilities
+
+### Moosa
+- Frontend (User & admin panels)
+- Authentication & email verification
+
+### William
+- DB security & SQLi/XSS prevention
+- Rollback logic for bets
+- Moderation/admin tooling
+
+### Cole
+- Leaderboard logic
+- Token economy modeling
+
+### Adam
+- Event management (create, predict, resolve)
+- Groups/tags system
+
+### Bryan
+- User analytics
+- Token economy balancing
+
+---
+
+## Deliverables
+
+### Frontend Web App
+- Login / Signup
+- Dashboard with current events
+- Event creation & prediction interface
+- Groups/Categories page
+- Leaderboard
+
+### Backend API
+- Auth + email verification
+- Event creation, predictions, resolution logic
+- Admin moderation tools
+- User stats & token tracking
+
+### Database
+- Users
+- Events
+- Predictions
+- Groups
+
+---
+
+## Success Criteria
+- Only `@uwaterloo.ca` users can sign up
+- Users can:
+  - Create accounts
+  - Earn/spend Goose Dollars
+  - Create and predict events
+  - View leaderboards & stats
+- Admins can approve/resolve events and handle disputes
+- Token balances update correctly for bets and payouts
+- Platform meets basic security protections
+- A simple user guide/help section exists
+
+---
+
+## Authority & Sign-Off
+This project charter is agreed upon by the GooseMarket development team.  
+All major scope changes require team discussion and approval.
+
+**Sign-Off:**  
+✔ GooseMarket Team  
+✔ Course Instructor 
