@@ -8,13 +8,18 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 from database import get_supabase
 
 # Import poll functions
-from api.polls import create_poll, get_poll, edit_poll
+from api.polls import create_poll, get_poll, edit_poll, list_polls
 
 app = Flask(__name__)
 
 @app.route("/api/python")
 def hello_world():
     return "<p>Hello, World!</p>"
+
+@app.route("/api/polls", methods=["GET"])
+def list_polls_route():
+    """List polls with pagination and filters."""
+    return list_polls()
 
 @app.route("/api/polls", methods=["POST"])
 def create_poll_route():
