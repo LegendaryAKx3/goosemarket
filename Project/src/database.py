@@ -47,7 +47,7 @@ def approve_poll(poll_id: int) -> Dict[str, Any]:
     if not data:
         raise ValueError(f"No poll found with id {poll_id}")
 
-    return data[0]
+    return None
 
 def update_poll(
     poll_id: int,
@@ -89,4 +89,4 @@ def update_poll(
     if not data:
         raise ValueError(f"No poll found with id {poll_id}")
 
-    return data[0]
+    return None
