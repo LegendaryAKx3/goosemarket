@@ -111,13 +111,11 @@ def test_list_polls_filter_by_creator(client, mock_supabase):
 
 def test_list_polls_filter_by_tag(client, mock_supabase):
     """Test filtering polls by tag."""
-    # Mock poll_tags query
-    poll_tags_result = MagicMock()
-    poll_tags_result.data = [{"poll_id": 1}, {"poll_id": 3}]
-    
-    # Mock polls query
-    polls_result = MagicMock()
-    polls_result.data = [
+    # Mock the INNER JOIN query result
+    # The query does: polls JOIN poll_tags WHERE poll_tags.tag_id = 2
+    # So only polls that have tag_id=2 in poll_tags table are returned
+    mock_result = MagicMock()
+    mock_result.data = [
         {
             "id": 1,
             "title": "Tagged Poll",
@@ -125,20 +123,23 @@ def test_list_polls_filter_by_tag(client, mock_supabase):
             "creator": 1,
             "public": True,
             "created_at": datetime.now(timezone.utc).isoformat(),
-            "ends_at": None
+            "ends_at": None,
+            "poll_tags": {"tag_id": 2}  # The joined data from poll_tags table
         }
     ]
-    polls_result.count = 1
+    mock_result.count = 1
     
-    # Setup mock to return different values for different table calls
-    mock_supabase.table.return_value.select.return_value.eq.return_value.execute.return_value = poll_tags_result
-    mock_supabase.table.return_value.select.return_value.eq.return_value.in_.return_value.order.return_value.range.return_value.execute.return_value = polls_result
+    # Mock the INNER JOIN query chain: table().select().eq().eq().order().range().execute()
+    # First .eq() is for poll_tags.tag_id, second .eq() is for public filter
+    mock_supabase.table.return_value.select.return_value.eq.return_value.eq.return_value.order.return_value.range.return_value.execute.return_value = mock_result
     
     response = client.get('/api/polls?tag=2')
     assert response.status_code == 200
     
     data = response.get_json()
     assert "polls" in data
+    assert len(data["polls"]) == 1
+    assert data["polls"][0]["id"] == 1
 
 def test_list_polls_filter_by_status_open(client, mock_supabase):
     """Test filtering polls by open status."""

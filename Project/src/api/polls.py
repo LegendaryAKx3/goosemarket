@@ -227,22 +227,21 @@ def list_polls():
         if tag:
             try:
                 tag_id = int(tag)
-                # Get poll IDs that have this tag
-                poll_tags_result = supabase.table("poll_tags").select("poll_id").eq("tag_id", tag_id).execute()
-                if poll_tags_result.data:
-                    poll_ids = [pt["poll_id"] for pt in poll_tags_result.data]
-                    query = query.in_("id", poll_ids)
-                else:
-                    # No polls with this tag
-                    return jsonify({
-                        "polls": [],
-                        "pagination": {
-                            "page": page,
-                            "page_size": page_size,
-                            "total": 0,
-                            "total_pages": 0
-                        }
-                    }), 200
+                # Use inner join to filter polls by tag
+                query = (supabase.table("polls")
+                        .select("polls.*, poll_tags!inner(tag_id)", count="exact")
+                        .eq("poll_tags.tag_id", tag_id))
+                
+                # Reapply public filter after join
+                if public_filter == 'true':
+                    query = query.eq("public", True)
+                elif public_filter == 'false':
+                    query = query.eq("public", False)
+                
+                # Reapply creator filter if exists
+                if creator:
+                    query = query.eq("creator", creator_id)
+                    
             except (ValueError, TypeError):
                 return jsonify({"error": "Invalid tag ID"}), 400
         
