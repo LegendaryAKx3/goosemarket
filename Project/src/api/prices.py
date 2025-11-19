@@ -54,7 +54,7 @@ def get_price(poll_id):
             }), 501
         
         # Get current positions
-        q = _aggregate_positions(poll_id)
+        q = _aggregate_positions(poll_id, client=supabase)
         q_yes = float(q.get("YES", 0))
         q_no = float(q.get("NO", 0))
         
@@ -63,13 +63,12 @@ def get_price(poll_id):
         
         # Get current prices
         price_yes, price_no = _lmsr_prices(q_yes, q_no, b)
-        
-        # Return price information
+        # Return price information as integer cents
         return jsonify({
             "poll_id": poll_id,
-            "price_yes": round(price_yes, 6),
-            "price_no": round(price_no, 6),
-            "b": round(b, 6),
+            "price_yes": price_yes,
+            "price_no": price_no,
+            "b": int(round(b)),
             "q_yes": int(q_yes),
             "q_no": int(q_no),
             "timestamp": datetime.now(timezone.utc).isoformat()

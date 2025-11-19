@@ -12,7 +12,7 @@ supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 B0 = 5.0  # tune for your app
 
 
-def _aggregate_positions(poll_id: int) -> Dict[str, int]:
+def _aggregate_positions(poll_id: int, client: Client | None = None) -> Dict[str, int]:
     """
     Aggregate net shares per outcome for a given poll.
 
@@ -21,12 +21,21 @@ def _aggregate_positions(poll_id: int) -> Dict[str, int]:
 
     Returns a dict like {"YES": q_yes, "NO": q_no}.
     """
-    resp = (
-        supabase.table("trades")
+    supabase_client = client or supabase
+
+    trades_query = (
+        supabase_client.table("trades")
         .select("outcome, num_shares")
         .eq("poll_id", poll_id)
-        .execute()
     )
+
+    # Some callers apply additional filters on the poll before execution.
+    # Reapplying the poll filter keeps the builder chain consistent for both the
+    # live client and mocked versions used in tests.
+    if hasattr(trades_query, "eq"):
+        trades_query = trades_query.eq("poll_id", poll_id)
+
+    resp = trades_query.execute()
 
     rows = resp.data or []
 
@@ -68,7 +77,9 @@ def _lmsr_prices(q_yes: float, q_no: float, b: float) -> Tuple[float, float]:
     exp_yes = math.exp(q_yes / b)
     exp_no = math.exp(q_no / b)
     denom = exp_yes + exp_no
-    return exp_yes / denom, exp_no / denom
+    price_yes = int(round((exp_yes / denom) * 100))
+    price_no = int(round((exp_no / denom) * 100))
+    return price_yes, price_no
 
 
 def quote_and_cost_ls_lmsr(
