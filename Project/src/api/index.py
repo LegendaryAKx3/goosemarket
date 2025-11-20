@@ -10,6 +10,9 @@ from database import get_supabase
 # Import poll functions
 from api.polls import create_poll, get_poll, edit_poll, list_polls
 
+# Import price functions
+from api.prices import get_price
+
 app = Flask(__name__)
 
 @app.route("/api/python")
@@ -35,3 +38,9 @@ def get_poll_route(poll_id):
 def edit_poll_route(poll_id):
     """Edit a poll."""
     return edit_poll(poll_id)
+
+@app.route("/api/polls/<poll_id>/price", methods=["GET"])
+def get_price_route(poll_id):
+    """Get current market price for a poll."""
+    return get_price(poll_id)
+
