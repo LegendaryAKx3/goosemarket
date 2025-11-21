@@ -1,11 +1,11 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { PlusCircle, Shield, Trophy, LayoutGrid } from "lucide-react";
-import { useAuth } from "@/context/AuthContext";   // ✅ added
+import { useAuth } from "@/context/AuthContext";
 
 export default function Navbar() {
   const location = useLocation();
-  const { isAdmin } = useAuth();   // ✅ added
+  const { isAdmin } = useAuth();
 
   const navLink = (to, label, icon) => (
     <Link
@@ -44,7 +44,7 @@ export default function Navbar() {
           {navLink("/create", "Create", <PlusCircle size={18} />)}
           {navLink("/leaderboard", "Leaderboard", <Trophy size={18} />)}
 
-          {/* ✅ Only show Admin link if logged in as admin */}
+          {/* Only show Admin link if logged in as admin */}
           {isAdmin && navLink("/admin", "Admin", <Shield size={18} />)}
         </div>
 

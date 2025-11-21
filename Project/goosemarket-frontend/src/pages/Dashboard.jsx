@@ -16,7 +16,7 @@ export default function Dashboard() {
   const [searchQuery, setSearchQuery] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
 
-  // ✅ Load events from your local JSON file
+  // Load events from your local JSON file
   const { data: events = [], isLoading } = useQuery({
     queryKey: ["events"],
     queryFn: async () => {
@@ -28,7 +28,7 @@ export default function Dashboard() {
 
   });
 
-  // ✅ Apply filters (search + category + active only)
+  // Apply filters (search + category + active only)
   const filteredEvents = events.filter((event) => {
     const matchesSearch = event.title
       ?.toLowerCase()

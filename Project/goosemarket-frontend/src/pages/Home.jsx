@@ -9,12 +9,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { AlertCircle } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
-// ✅ Import Auth Context
+// Import Auth Context
 import { useAuth } from "@/context/AuthContext";
 
 export default function Home() {
   const navigate = useNavigate();
-  const { setIsAdmin } = useAuth();    // ✅ get context setter
+  const { setIsAdmin } = useAuth();
 
   const [activeTab, setActiveTab] = useState("login");
   const [error, setError] = useState("");
@@ -50,7 +50,7 @@ export default function Home() {
       return;
     }
 
-    // ✅ Ensure normal users are NOT admins
+    // Ensure normal users are NOT admins
     setIsAdmin(false);
 
     navigate(createPageUrl("Dashboard"));
@@ -75,7 +75,7 @@ export default function Home() {
       return;
     }
 
-    // ✅ Normal signup users are NOT admins
+    // Normal signup users are NOT admins
     setIsAdmin(false);
 
     navigate(createPageUrl(`OTPVerification?email=${encodeURIComponent(signupEmail)}`));
@@ -90,7 +90,7 @@ export default function Home() {
       return;
     }
 
-    // ✅ Mark as admin
+    // Mark as admin
     setIsAdmin(true);
 
     navigate(createPageUrl("Admin"));

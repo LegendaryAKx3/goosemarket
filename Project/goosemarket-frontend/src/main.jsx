@@ -21,7 +21,6 @@ const queryClient = new QueryClient();
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
-      {/* ✅ Only modification: wrap everything inside AuthProvider */}
       <AuthProvider>
         <BrowserRouter>
           <Routes>
