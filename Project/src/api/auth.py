@@ -98,15 +98,17 @@ def register():
 	if not username:
 		username = email.split("@")[0]
 
-	# Check if stuff is taken
-	supabase = get_supabase()
-	try:
-		res = supabase.table("profiles").select("email").eq("email", email).execute()
-	except Exception as e:
-		return jsonify({"error": "Failed to check email availability: " + str(e)}), 500
-	if res.data and len(res.data) > 0:
-		return jsonify({"error": "Email is already registered"}), 400
+	signup_credentials = {
+		"email": email,
+		"options": {
+			"email_redirect_to": "http://" + request.headers.get("Host") + "/login", # TODO: Use HTTPS in production
+			"data": {"username": username}
+		}
+	}
 
+	# Check if stuff is taken
+	update = False
+	supabase = get_supabase()
 	try:
 		res = supabase.table("profiles").select("username").eq("username", username).execute()
 	except Exception as e:
@@ -114,17 +116,30 @@ def register():
 	if res.data and len(res.data) > 0:
 		return jsonify({"error": "Username is already taken"}), 400
 
+	# Resend if duplicate email
+	try:
+		res = supabase.table("profiles").select("email", "active", "username").eq("email", email).execute()
+	except Exception as e:
+		return jsonify({"error": "Failed to check email availability: " + str(e)}), 500
+	if res.data and len(res.data) > 0:
+		if res.data[0]["active"]:
+			return jsonify({"error": "Email is already registered"}), 400
+		else:
+			signup_credentials["type"] = "signup"
+			try:
+				supabase.auth.resend(signup_credentials)
+			except sb.AuthError as e:
+				return jsonify({"error": str(e)}), 400
+			except Exception as e:
+				return jsonify({"error": str(e), "type": str(type(e))}), 500
+			return "", 200
+
 	# Make account
 	try:
-		res = supabase.auth.sign_up({
-			"email": email,
-			"password": password,
-			"options": {
-				"email_redirect_to": request.headers.get("Origin") + "/login"
-			}
-		})
+		signup_credentials["password"] = password
+		res = supabase.auth.sign_up(signup_credentials)
 	except Exception as e:
-		return jsonify({"error": str(e), "type": type(e)}), 500
+		return jsonify({"error": str(e), "type": str(type(e))}), 500
 
 	# Something weird happened but wasn't reported earlier somehow
 	if not res.user:
@@ -134,7 +149,6 @@ def register():
 	try:
 		supabase.table("profiles").insert({
 			"auth_id": res.user.id,
-			"username": username,
 			"email": email
 		}).execute()
 	except Exception as e:
@@ -153,16 +167,27 @@ def verify_email():
 	if not "expires_at" in data:
 		return jsonify({"error": "Invalid token data"}), 400
 
-	# We only care about the info part of the JWT
-	padded = token.split(".")[1] + "=="
-	email = loads(b64decode(padded).decode()).get("email")
-
-	# Get user profile and send cookies
+	# Get all our info from trusted JWT
 	supabase = get_supabase()
 	try:
-		username, admin = supabase.table("profiles").select("username", "admin").eq("email", email).execute().data[0].values()
+		user = supabase.auth.get_user(token)
+		if not user.user:
+			return jsonify({"error": "Invalid token"}), 400
+		user = user.user
 	except Exception as e:
-		return jsonify({"error": "Failed to retrieve user profile: " + str(e)}), 500
+		return jsonify({"error": "Failed to get user from token: " + str(e)}), 500
+
+	# Update user profile in db with username
+	username = user.user_metadata.get("username")
+	email = user.email
+	admin = False
+	try:
+		supabase.table("profiles").update({
+			"username": username,
+			"active": True
+		}).eq("auth_id", user.id).execute()
+	except Exception as e:
+		return jsonify({"error": "Failed to create user profile: " + str(e)}), 500
 
 	res = make_response()
 	res.set_cookie("sb-access-token", token, expires=data.get("expires_at"), httponly=True)

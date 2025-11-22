@@ -29,6 +29,9 @@ export default function Login() {
 	const [signupPassword, setSignupPassword] = useState("");
 	const [signupUsername, setSignupUsername] = useState("");
 	const [confirmPassword, setConfirmPassword] = useState("");
+	const [submitTime, setSubmitTime] = useState(0);
+	const [currentTime, setCurrentTime] = useState(0);
+	var timeInterval = null;
 
 	// Verify email
 	const [verifyEmail, setVerifyEmail] = useState("");
@@ -76,6 +79,8 @@ export default function Login() {
 		e.preventDefault();
 		setError("");
 
+		console.log(signupEmail, signupPassword, confirmPassword);
+
 		if (!validateEmail(signupEmail)) {
 			setError("Please use your @uwaterloo.ca email address without any '+' symbols");
 			return;
@@ -103,7 +108,10 @@ export default function Login() {
 			}),
 		})
 			.then((res) => {
-				if (res.ok) setVerifyEmail(signupEmail);
+				if (res.ok) {
+					setVerifyEmail(signupEmail);
+					setSubmitTime(window.performance.now());
+				}
 				return res.json();
 			})
 			.then((data) => {
@@ -147,6 +155,12 @@ export default function Login() {
 				});
 		}
 
+		if (timeInterval === null) {
+			timeInterval = setInterval(() => {
+				setCurrentTime(window.performance.now());
+			}, 100);
+		}
+
 		setUpdate(false);
 	}, [navigate, update]);
 
@@ -179,7 +193,22 @@ export default function Login() {
 								<p className="text-slate-300 mb-4">
 									An email has been sent to {verifyEmail}. Please click the link to continue.
 								</p>
-								<p className="text-slate-300">This tab can now be closed</p>
+								<p className="text-slate-300 mb-4">This tab can now be closed</p>
+								{window.performance.now() - submitTime > 60000 ? (
+									<Button
+										className="w-full bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-semibold shadow-lg shadow-emerald-500/20"
+										onClick={handleSignup}
+									>
+										Resend Verification Link
+									</Button>
+								) : (
+									<Button
+										className="w-full text-white font-semibold bg-slate-800 hover:bg-slate-800 cursor-default"
+										disabled
+									>
+										Resend Verification Link ({Math.ceil(60 - (currentTime - submitTime) / 1000)}s)
+									</Button>
+								)}
 							</CardContent>
 						</>
 					) : (
