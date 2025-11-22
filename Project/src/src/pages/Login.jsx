@@ -14,7 +14,7 @@ import { useAuth } from "@/context/AuthContext";
 
 export default function Login() {
 	const navigate = useNavigate();
-	const { setIsAdmin } = useAuth();
+	const authContext = useAuth();
 
 	const [activeTab, setActiveTab] = useState("login");
 	const [error, setError] = useState("");
@@ -63,7 +63,7 @@ export default function Login() {
 		})
 			.then((res) => {
 				if (res.ok) {
-					setUpdate(!update);
+					setUpdate(true);
 				}
 				return res.json();
 			})
@@ -114,10 +114,7 @@ export default function Login() {
 	// Detect email verification token in URL hash
 	useEffect(() => {
 		if (document.cookie.includes("user-info")) {
-			let info = JSON.parse(atob(document.cookie.split("user-info=")[1].split(";")[0]));
-			setIsAdmin(info.admin);
-			/// TODO: Set other user context info
-
+			authContext.setUpdate(true);
 			navigate("/dashboard");
 			return;
 		}
@@ -149,6 +146,8 @@ export default function Login() {
 					setError(data["error"] || "Email verification failed");
 				});
 		}
+
+		setUpdate(false);
 	}, [navigate, update]);
 
 	const wrapSetActiveTab = (tab) => {
