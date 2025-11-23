@@ -9,6 +9,8 @@ from database import get_supabase
 
 # Import poll functions
 from api.polls import create_poll, get_poll, edit_poll, list_polls
+from api.positions import get_positions_endpoint
+from api.userinfo import get_data
 
 app = Flask(__name__)
 
@@ -35,3 +37,13 @@ def get_poll_route(poll_id):
 def edit_poll_route(poll_id):
     """Edit a poll."""
     return edit_poll(poll_id)
+
+@app.route("/api/positions", methods=["GET"])
+def get_positions_route():
+    """Retrieve user positions."""
+    return get_positions_endpoint()
+
+@app.route("/api/user", methods=["GET"])
+def get_user_info_route():
+    """Retrieve user information."""
+    return get_data()

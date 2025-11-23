@@ -314,6 +314,35 @@ def get_poll(poll_id):
     except Exception as e:
         return jsonify({"error": f"Server error: {str(e)}"}), 500
 
+def get_poll_data(poll_id):
+    """
+    Internal function to get poll data without Flask response wrapping.
+    """
+    try:
+        supabase = get_supabase()
+        if not supabase:
+            return None
+
+        result = supabase.table("polls").select("*").eq("id", poll_id).execute()
+
+        if not result.data:
+            return None
+
+        poll = result.data[0]
+
+        # Check if poll has ended (if ends_at is set)
+        if poll.get("ends_at"):
+            ends_at = datetime.fromisoformat(poll["ends_at"].replace("Z", "+00:00"))
+            current_time = datetime.now(timezone.utc)
+            poll["has_ended"] = ends_at <= current_time
+        else:
+            poll["has_ended"] = False
+
+        return poll
+
+    except Exception as e:
+        return None
+
 def edit_poll(poll_id):
     """
     Edit a poll (only allowed before first trade).
