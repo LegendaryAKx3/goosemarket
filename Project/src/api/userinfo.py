@@ -6,7 +6,7 @@ from api.positions import get_positions
 def get_data():
     """"
     Retrieve user information such as username, balance, lifetime PnL, and positions
-    
+
     Expected JSON:
     {
         "user_id": "<user_id>",
@@ -43,27 +43,27 @@ def get_data():
             user_id = int(user_id)
         except (ValueError, TypeError):
             return jsonify({"error": "Invalid or missing user_id"}), 400
-        
+
         supabase = get_supabase()
         if not supabase:
             return jsonify({"error": "Database connection error"}), 503
-        
-        #Verify user exists
+
+        # Verify user exists
         user_result = supabase.table("users").select("*").eq("id", user_id).execute()
         if not user_result.data:
             return jsonify({"error": "User does not exist"}), 404
-        
+
         user = user_result.data[0]
         username = user.get("username", "")
         balance = user.get("balance", 0.0)
 
-        #Get user positions
+        # Get user positions
         positions_response = get_positions(user_id, poll_id, status, page_size, page)
         if positions_response.status_code != 200:
             return positions_response
         positions_data = positions_response.get_json()
         positions = positions_data.get("positions", [])
-        
+
         lifetime_pnl = 0.0
         exposure = 0.0
         for position in positions:

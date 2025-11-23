@@ -5,7 +5,7 @@ from database import get_supabase
 from api.amm import quote_and_cost_ls_lmsr, B0
 from api.polls import get_poll_data
 
-#Pagination Constants
+# Pagination Constants
 DEFAULT_PAGE_SIZE = 20
 MAX_PAGE_SIZE = 100
 
@@ -54,7 +54,7 @@ def get_positions_endpoint():
         page = data.get("page", 1)
 
         return get_positions(user_id, poll_id, status)
-    
+
     except Exception as e:
         return jsonify({"error": f"Server error: {str(e)}"}), 500
 
@@ -81,11 +81,11 @@ def get_positions(user_id, poll_id=None, status=None, page_size=DEFAULT_PAGE_SIZ
             user_id = int(user_id)
         except (ValueError, TypeError):
             return jsonify({"error": "Invalid or missing user_id"}), 400
-        
+
         supabase = get_supabase()
         if not supabase:
             return jsonify({"error": "Database connection error"}), 503
-        
+
         try:
             page_size = int(page_size)
             if page_size <= 0:
@@ -94,21 +94,21 @@ def get_positions(user_id, poll_id=None, status=None, page_size=DEFAULT_PAGE_SIZ
                 page_size = MAX_PAGE_SIZE
         except (ValueError, TypeError):
             page_size = DEFAULT_PAGE_SIZE
-        
+
         try:
             page = int(page)
             if page <= 0:
                 page = 1
         except (ValueError, TypeError):
             page = 1
-        
+
         offset = (page - 1) * page_size
-        
+
         # Verify user exists
         user_result = supabase.table("users").select("id").eq("id", user_id).execute()
         if not user_result.data:
             return jsonify({"error": "User does not exist"}), 404
-        
+
         now_utc = datetime.now(timezone.utc).isoformat()
 
         if poll_id:
@@ -117,7 +117,7 @@ def get_positions(user_id, poll_id=None, status=None, page_size=DEFAULT_PAGE_SIZ
                 poll_id = int(poll_id)
             except (ValueError, TypeError):
                 return jsonify({"error": "Invalid market_id"}), 400
-            
+
             # Verify poll exists
             poll_query = supabase.table("polls").select("ends_at").eq("id", poll_id).execute()
             if not poll_query.data:
@@ -125,7 +125,7 @@ def get_positions(user_id, poll_id=None, status=None, page_size=DEFAULT_PAGE_SIZ
 
             # Check poll status
             is_open = now_utc < poll_query.data[0]["ends_at"]
-            
+
             # If we're looking at a specific poll, one of open/closed returns the poll, and the other returns nothing
             if (status == "open" and not is_open) or (status == "closed" and is_open):
                 return jsonify({"positions": []}), 200
@@ -153,7 +153,7 @@ def get_positions(user_id, poll_id=None, status=None, page_size=DEFAULT_PAGE_SIZ
             else:
                 # Status not provided, return all trades
                 result = supabase.table("trades").select("*").eq("user_id", user_id).order("timestamp", desc=False).range(offset, offset + page_size - 1).execute()
-        
+
         # Construct positions
         trades = result.data
 
@@ -166,7 +166,7 @@ def get_positions(user_id, poll_id=None, status=None, page_size=DEFAULT_PAGE_SIZ
 
             poll = get_poll_data(trade["poll_id"])
             if not poll:
-                #Could not retrieve poll data, skip this trade
+                # Could not retrieve poll data, skip this trade
                 continue
 
             positions_map[key]["quantity"] += quantity
@@ -179,11 +179,11 @@ def get_positions(user_id, poll_id=None, status=None, page_size=DEFAULT_PAGE_SIZ
         for (poll_id, side), data in positions_map.items():
             quantity = data["quantity"]
             avg_price = data["total_cost"] / quantity if quantity != 0 else 0.0
-            
+
             position_quote = quote_and_cost_ls_lmsr(poll_id, side, -1*quantity, B0)
 
             current_price = position_quote["price_yes"] if side else position_quote["price_no"]
-            
+
             if data["result"]:
                 # Poll has ended, calculate pnl based on result
                 if side == data["result"]:
@@ -205,7 +205,7 @@ def get_positions(user_id, poll_id=None, status=None, page_size=DEFAULT_PAGE_SIZ
                 "current_pnl": current_pnl,
                 "open": data["open"]
             })
-        
+
         return jsonify({"positions": combined_positions}), 200
 
     except Exception as e:
