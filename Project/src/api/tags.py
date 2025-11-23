@@ -6,7 +6,7 @@ MAX_TAG_LENGTH = 20
 
 def add_tag_to_poll():
     """Add a tag to a poll
-    
+
     Expected JSON payload:
     {
         "tag": "Tag name"
@@ -15,22 +15,18 @@ def add_tag_to_poll():
     """
     try:
         data = request.get_json()
-        print("Hello")
-        #Validate required fields
+        # Validate required fields
         if not data:
             return jsonify({"error": "Request body is required"}), 400
 
         tag = data.get("tag", "").strip()
-        ID = data.get("ID", "").strip()
-        print("Hey")
-        
+        pollId = data.get("ID", "").strip()
+
         try:
-            ID = int(ID)
+            pollId = int(pollId)
         except (ValueError, TypeError):
             return jsonify({"error": "Poll ID must be a valid integer"}), 400
 
-        print("Hi")
-        
         supabase = get_supabase()
 
         if not supabase:
@@ -42,29 +38,29 @@ def add_tag_to_poll():
             return jsonify({"error": "Database error"}), 503
 
         if len(response.data) == 0:
-            #Create tag if doesn't already exist
+            # Create tag if doesn't already exist
 
-            #Validate tag name
+            # Validate tag name
             if(len(tag) < MIN_TAG_LENGTH):
                 return jsonify({"error": f"Tag must be at least {MIN_TAG_LENGTH} characters"}), 400
-            
+
             if(len(tag) > MAX_TAG_LENGTH):
                 return jsonify({"error": f"Tag must not exceed {MAX_TAG_LENGTH} characters"}), 400
-            
-            #Add tag to database
-            tagID = create_tag(tag)
-            if not tagID:
+
+            # Add tag to database
+            tagId = create_tag(tag)
+            if not tagId:
                 return jsonify({"error": "Failed to create tag"}), 500
         else:
             if not response.data:
-                tagID = create_tag(tag)
+                tagId = create_tag(tag)
             else:
-                tagID = response.data[0]["id"]
+                tagId = response.data[0]["id"]
 
-        #Create poll-tag relation in database
+        # Create poll-tag relation in database
         poll_tags_data = {
-            "poll_id": ID,
-            "tag_id": tagID
+            "poll_id": pollId,
+            "tag_id": tagId
         }
 
         result = supabase.table("poll_tags").insert(poll_tags_data).execute()
@@ -85,9 +81,9 @@ def create_tag(name: str) -> int:
 
     if not supabase:
         return None
-    
+
     tag_data = { "name": name}
-    
+
     result = supabase.table("tags").insert(tag_data).execute()
 
     if not result.data:
@@ -97,7 +93,7 @@ def create_tag(name: str) -> int:
 
 def get_all_tags():
     """Return all tags which contain the substring match. Passing an empty string as match returns all tags
-    
+
     Expected JSON payload:
     {
         "match": "String to match with tag"
@@ -106,11 +102,11 @@ def get_all_tags():
     try:
         data = request.get_json()
 
-        #Validate required fields
+        # Validate required fields
         if not data:
             return jsonify({"error": "Request body is required"}), 400
-        
-        #Pass is match = "" to return all tags, regardless of name
+
+        # Pass is match = "" to return all tags, regardless of name
         match = data.get("match", "").strip()
 
         supabase = get_supabase()
@@ -119,39 +115,40 @@ def get_all_tags():
             return jsonify({"error": "Database connection not available"}), 503
 
         search_pattern = f"%{match}%"
-        
+
         response = supabase.table("tags").select("*").ilike("name", search_pattern).execute()
 
         if getattr(response, "error", None):
             return jsonify({"error": "Failed to retrieve tags"}), 500
-        
+
         return jsonify({
             "message": "Successfully retrieved tags",
             "tags": response.data
         }), 200
 
-        
+
     except Exception as e:
         return jsonify({"error": f"Server error: {str(e)}"}), 500
 
 
 def get_tag_by_id():
     """Return the tag which matches the provided ID
-    
+
     Expected JSON payload:
     {
         "id": 12345678
-    }"""
+    }
+    """
     try:
         data = request.get_json()
 
         if not data:
             return jsonify({"error": "Request body is required"}), 400
-        
-        id = data.get("id", "").strip()
+
+        tagId = data.get("id", "").strip()
 
         try:
-            id = int(id)
+            tagId = int(tagId)
         except (ValueError, TypeError):
             return jsonify({"error": "ID must be a valid integer"}), 400
 
@@ -159,19 +156,19 @@ def get_tag_by_id():
 
         if not supabase:
             return jsonify({"error": "Database connection not available"}), 503
-        
-        response = supabase.table("tags").select("*").eq("id", id).execute()
+
+        response = supabase.table("tags").select("*").eq("id", tagId).execute()
 
         if getattr(response, "error", None):
             return jsonify({"error": "Failed to retrieve tag"}), 500
 
         if not response.data:
             return jsonify({"error": "Tag not found"}), 404
-        
+
         return jsonify({
             "message": "Successfully retrieved tag",
             "tag": response.data[0]
         }), 200
-    
+
     except Exception as e:
         return jsonify({"error": f"Server error: {str(e)}"}), 500
