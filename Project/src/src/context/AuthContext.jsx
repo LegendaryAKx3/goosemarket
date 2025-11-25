@@ -7,6 +7,7 @@ export function AuthProvider({ children }) {
 	const [isAdmin, setIsAdmin] = useState(false);
 	const [username, setUsername] = useState(null);
 	const [email, setEmail] = useState(null);
+	const [userId, setUserId] = useState(null);
 	const [update, setUpdate] = useState(false);
 
 	useEffect(() => {
@@ -21,12 +22,15 @@ export function AuthProvider({ children }) {
 		setIsAdmin(userInfo.admin);
 		setUsername(userInfo.username);
 		setEmail(userInfo.email);
+		setUserId(userInfo.user_id);
 
 		setUpdate(false);
 	}, [update]);
 
 	return (
-		<AuthContext.Provider value={{ isAdmin, setIsAdmin, username, setUsername, email, setEmail, setUpdate }}>
+		<AuthContext.Provider
+			value={{ isAdmin, setIsAdmin, username, setUsername, email, setEmail, userId, setUserId, setUpdate }}
+		>
 			{children}
 		</AuthContext.Provider>
 	);
