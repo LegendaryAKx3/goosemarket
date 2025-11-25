@@ -20,7 +20,11 @@ from api.prices import get_price
 from api.trade import buy_shares, sell_shares
 
 # Import tag functions
+
 from api.tags import add_tag_to_poll, create_tag, get_all_tags, get_tag_by_id
+
+#Import leaderboard functions
+from api.leaderboard import get_leaderboard, calculate_total_users
 
 app = Flask(__name__)
 
@@ -138,5 +142,16 @@ def get_user_info_route():
     """Retrieve user information."""
     return get_data()
 
+@app.route("/api/leaderboard", methods=["POST"])
+@protected
+def leaderboard_route():
+    """Get leaderboard data for frontend."""
+    return get_leaderboard()
+
+@app.route("/api/leaderboard/count", methods=["GET"])
+@protected
+def get_user_count_route():
+    """Retrieve a count of users"""
+    return calculate_total_users()
 
 app.run(port=5328, debug=True)
