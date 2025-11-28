@@ -22,14 +22,16 @@ def _aggregate_positions(poll_id: int, client: Client | None = None) -> Dict[str
     Returns a dict like {"YES": q_yes, "NO": q_no}.
     """
     supabase_client = client or supabase
-
     trades_query = (
         supabase_client.table("poll_votes")
         .select("yes_votes, no_votes")
         .eq("poll_id", poll_id)
         .execute()
     )
-
+    if not trades_query.data:
+        # No trades placed yet
+        return {"YES": 0, "NO": 0}
+    
     return {"YES": trades_query.data[0]["yes_votes"], "NO": trades_query.data[0]["no_votes"]}
 
 
