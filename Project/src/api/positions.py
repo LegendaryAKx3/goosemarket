@@ -205,6 +205,7 @@ def get_positions(user_id, poll_id=None, status=None, page_size=DEFAULT_PAGE_SIZ
             # Quote the market for closing the position now: selling `quantity` shares
             # We pass -quantity to represent selling the current position
             position_quote = quote_and_cost_ls_lmsr(poll_id, side, -1 * quantity, B0)
+            curr_price = position_quote.get("price_yes") if side else position_quote.get("price_no")
 
             # cost returned by quote function is in dollars (cash change for the operation)
             # value_now_dollars is what you'd receive (positive) from selling the current quantity
@@ -215,19 +216,21 @@ def get_positions(user_id, poll_id=None, status=None, page_size=DEFAULT_PAGE_SIZ
                 # Poll has ended: determine final value based on resolution
                 if side == data["result"]:
                     value_now_cents = int(quantity * 100)
+                    curr_price = 100
                 else:
                     # Losing side: pays $0
                     value_now_cents = 0
+                    curr_price = 0
 
             # PnL in cents = current value - cost basis
             pnl_cents = value_now_cents - cost_basis_cents
 
             combined_positions.append({
                 "poll_id": poll_id,
-                "side": side,
+                "side": "Yes" if side else "No",
                 "quantity": quantity,
                 "avg_price": round(avg_price_dollars, 2),
-                "current_price": position_quote.get("price_yes") if side else position_quote.get("price_no"),
+                "current_price": curr_price,
                 "current_pnl": round(pnl_cents / 100.0, 2),
                 "open": data.get("open", True),
             })
