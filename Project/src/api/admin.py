@@ -2,7 +2,6 @@ from flask import jsonify, request
 from database import get_supabase
 from tags import get_or_create_tag
 from datetime import datetime, timezone
-from collections import defaultdict
 
 from amm import _lmsr_prices, _compute_b_ls_lmsr, B0
 
