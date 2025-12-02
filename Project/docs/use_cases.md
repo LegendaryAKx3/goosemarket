@@ -1,6 +1,9 @@
 # GooseMarket Use Cases
 
+
 ## Student Use Cases
+
+⸻
 
 Use Case: Sign Up
 
@@ -9,14 +12,16 @@ Goal: Create account using @uwaterloo.ca email
 Preconditions: User not already registered
 
 Main Flow:
-Student opens Sign-Up page
-System prompts for @uwaterloo.ca email
-Student submits registration form
-System validates email domain
-System sends verification link
+	1.	Student opens Sign-Up page
+	2.	System prompts for @uwaterloo.ca email
+	3.	Student submits registration form
+	4.	System validates email domain
+	5.	System sends verification link
 
 Postconditions: Account created, pending verification
 Exceptions: Invalid email domain → registration denied
+
+⸻
 
 Use Case: Verify Email
 
@@ -25,27 +30,31 @@ Goal: Confirm account ownership
 Preconditions: Verification email sent
 
 Main Flow:
-Student opens verification email
-Student clicks verification link
-System validates token
-System activates GooseMarket account
+	1.	Student opens verification email
+	2.	Student clicks verification link
+	3.	System validates token
+	4.	System activates account
 
-Postconditions: Account verified and active
+Postconditions: Account verified
 Exceptions: Expired or invalid link → resend verification
+
+⸻
 
 Use Case: Secure Login
 
 Actor: Student
-Goal: Access GooseMarket account securely
+Goal: Access GooseMarket securely
 Preconditions: Account verified
 
 Main Flow:
-Student enters credentials
-System authenticates credentials
-System logs user into dashboard
+	1.	Student enters credentials
+	2.	System authenticates
+	3.	System logs student in
 
-Postconditions: Student session active
-Exceptions: Wrong credentials → show error
+Postconditions: Session active
+Exceptions: Invalid credentials → show error
+
+⸻
 
 Use Case: Receive Login Bonus
 
@@ -54,435 +63,271 @@ Goal: Earn Goose Dollars for logging in
 Preconditions: Successful login
 
 Main Flow:
-System checks last login date
-System awards Goose Dollars if eligible
-System updates student balance
+	1.	System checks last login time
+	2.	System awards bonus if eligible
+	3.	System updates balance
 
-Postconditions: Student balance increased
+Postconditions: Balance increased
 Exceptions: Already rewarded today → no bonus
+
+⸻
 
 Use Case: Earn Participation Rewards
 
 Actor: Student
-Goal: Gain Goose Dollars from ongoing engagement
+Goal: Earn Goose Dollars from platform participation
 Preconditions: Account active
 
 Main Flow:
-Student completes platform interactions
-System tracks participation metrics
-System grants reward when threshold met
+	1.	Student performs platform activities
+	2.	System tracks participation
+	3.	System grants reward when threshold met
 
-Postconditions: Additional Goose Dollars added
+Postconditions: Additional Goose Dollars awarded
 Exceptions: Suspicious activity → reward withheld
+
+⸻
 
 Use Case: Browse Events
 
 Actor: Student
-Goal: Explore open prediction events
+Goal: View open prediction events
 Preconditions: Logged in
 
 Main Flow:
-Student opens Events page
-System displays list of open events
-System updates list dynamically
+	1.	Student opens events page
+	2.	System displays open events
 
-Postconditions: Events visible to student
-Exceptions: No events available → show placeholder
+Postconditions: Events visible
+Exceptions: No events → show placeholder
+
+⸻
 
 Use Case: Filter Events
 
 Actor: Student
-Goal: Find events by category or group
+Goal: Find events by category or name
 Preconditions: Events available
 
 Main Flow:
-Student selects filter options
-System refines event list
-Student views filtered results
+	1.	Student selects filters
+	2.	System refines event list
 
-Postconditions: Relevant events displayed
-Exceptions: No matches found → show “no results”
+Postconditions: Relevant events shown
+Exceptions: No matches → show “no results”
+
+⸻
 
 Use Case: View Event Details
 
 Actor: Student
-Goal: Review event information before predicting
+Goal: Review an event before predicting
 Preconditions: Event selected
 
 Main Flow:
-System loads event page
-System displays description, odds, activity
-Student reviews event information
+	1.	System loads event details
+	2.	System shows description, odds, activity
 
-Postconditions: Student informed about event
-Exceptions: Event unavailable → show error
+Postconditions: Student informed
+Exceptions: Event unavailable → error
+
+⸻
 
 Use Case: Create Prediction Event
 
 Actor: Student
-Goal: Propose a new community prediction
+Goal: Create new prediction event
 Preconditions: Logged in
 
 Main Flow:
-Student opens “Create Event” form
-Student enters title, options, and description
-System validates input
-System submits event for admin approval
+	1.	Student opens “Create Event”
+	2.	Student enters title, options, details
+	3.	System validates submission
+	4.	System forwards event to admin review
 
-Postconditions: Event pending moderator review
-Exceptions: Invalid or incomplete data → show error
+Postconditions: Event pending approval
+Exceptions: Invalid data → show error
+
+⸻
 
 Use Case: Buy/Sell Shares
 
 Actor: Student
-Goal: Participate in prediction market
-Preconditions: Event open, sufficient balance
+Goal: Participate in the prediction market
+Preconditions: Event open; adequate balance
 
 Main Flow:
-Student selects event option
-Student enters Goose Dollar amount
-System processes trade
-System updates holdings and balance
+	1.	Student selects option
+	2.	Student enters purchase amount
+	3.	System processes trade
+	4.	System updates holdings and balance
 
-Postconditions: Student position updated
-Exceptions: Insufficient balance → trade denied
+Postconditions: Position updated
+Exceptions: Insufficient balance → denied
+
+⸻
 
 Use Case: View Positions
 
 Actor: Student
-Goal: Track current event investments
-Preconditions: Active trades exist
+Goal: Track current market positions
+Preconditions: Student has trades
 
 Main Flow:
-Student opens portfolio
-System displays list of active positions
-System shows performance metrics
+	1.	Student opens portfolio
+	2.	System displays positions and metrics
 
-Postconditions: Student sees up-to-date holdings
-Exceptions: No active positions → show empty state
+Postconditions: Holdings visible
+Exceptions: No positions → empty state
+
+⸻
 
 Use Case: Quick Access to Event from Position
 
 Actor: Student
-Goal: Manage predictions directly from portfolio
+Goal: Navigate to an event from portfolio
 Preconditions: Active positions exist
 
 Main Flow:
-Student clicks a position
-System navigates to corresponding event page
+	1.	Student clicks a position
+	2.	System opens event details
 
-Postconditions: Event details loaded
-Exceptions: Event resolved or removed → show notice
+Postconditions: Event page loaded
+Exceptions: Event resolved → show notice
+
+⸻
 
 Use Case: View Profile
 
 Actor: Student
-Goal: See stats and trade history
+Goal: See account stats and history
 Preconditions: Logged in
 
 Main Flow:
-Student opens profile
-System loads statistics, balance, and trade log
+	1.	Student opens profile
+	2.	System loads stats, balance, history
 
-Postconditions: Profile data displayed
-Exceptions: Profile data load error → retry
+Postconditions: Profile displayed
+Exceptions: Data error → retry
+
+⸻
 
 Use Case: View Leaderboard
 
 Actor: Student
-Goal: Compare performance with others
-Preconditions: Sufficient player data
+Goal: Compare performance to peers
+Preconditions: Leaderboard data exists
 
 Main Flow:
-Student selects Leaderboard
-System ranks users by Goose Dollars
-System displays top performers
+	1.	Student opens leaderboard
+	2.	System ranks users
+	3.	System displays ranking
 
 Postconditions: Leaderboard visible
-Exceptions: No rankings yet → show placeholder
+Exceptions: No data → placeholder
 
-Use Case: Join Groups
-
-Actor: Student
-Goal: Participate within faculty or community group
-Preconditions: Logged in
-
-Main Flow:
-Student opens Groups section
-System lists available groups
-Student selects group to join
-System updates membership
-
-Postconditions: Student joined group
-Exceptions: Already a member → show notice
-
-Use Case: Subscribe to Event Tags
-
-Actor: Student
-Goal: Get updates on topics of interest
-Preconditions: Logged in
-
-Main Flow:
-Student browses event tags
-Student subscribes to chosen tags
-System records subscriptions
-
-Postconditions: Notifications enabled for tags
-Exceptions: Subscription error → retry
-
-Use Case: Access Help / Tutorial
-
-Actor: Student
-Goal: Learn how GooseMarket works
-Preconditions: None
-
-Main Flow:
-Student opens Help section
-System displays tutorial or guide
-
-Postconditions: Student better understands platform
-Exceptions: Help page not loaded → show error
-
-Use Case: View Tooltips / UI Guidance
-
-Actor: Student
-Goal: Understand features through inline hints
-Preconditions: Logged in
-
-Main Flow:
-System shows contextual tooltips
-Student interacts with UI
-System highlights new or complex actions
-
-Postconditions: Student learns feature usage
-Exceptions: Tooltip disabled → none shown
-
-Use Case: Report Suspicious Activity
-
-Actor: Student
-Goal: Notify moderators of abuse or cheating
-Preconditions: Logged in
-
-Main Flow:
-Student opens report form
-Student submits report
-System logs case for moderator review
-
-Postconditions: Report received by admin
-Exceptions: Invalid or duplicate report → ignored
-
-Use Case: Handle Disputes Fairly
-
-Actor: Student
-Goal: Submit or review event disputes
-Preconditions: Event outcome contested
-
-Main Flow:
-Student submits dispute
-System logs dispute for admin handling
-Admin reviews evidence and responds
-
-Postconditions: Dispute processed
-Exceptions: Missing data → request clarification
+⸻
 
 Use Case: Login Streak Bonuses
 
 Actor: Student
-Goal: Earn rewards for consistent logins
+Goal: Earn streak-based rewards
 Preconditions: Logged in
 
 Main Flow:
-System tracks consecutive login days
-System calculates bonus
-System updates balance
+	1.	System tracks consecutive login days
+	2.	System calculates streak bonus
+	3.	System updates balance
 
-Postconditions: Student receives streak bonus
-Exceptions: Streak broken → reset count
+Postconditions: Bonus awarded
+Exceptions: Streak broken → reset
 
-## Admin / Moderator Use-Case Models
+⸻
+
+## Admin / Moderator Use Cases
+
+⸻
 
 Use Case: Moderator Login
 
-Actor: Admin / Moderator
-Goal: Access moderator tools securely
+Actor: Moderator
+Goal: Access admin tools securely
 Preconditions: Moderator account exists
 
 Main Flow:
-Moderator enters credentials
-System authenticates
-System loads moderator dashboard
+	1.	Moderator enters credentials
+	2.	System authenticates
+	3.	System loads dashboard
 
-Postconditions: Moderator session active
-Exceptions: Invalid credentials → access denied
+Postconditions: Access granted
+Exceptions: Invalid credentials → denied
+
+⸻
 
 Use Case: Approve or Reject Events
 
 Actor: Moderator
-Goal: Control which events go live
-Preconditions: Event submitted for review
+Goal: Control which student events go live
+Preconditions: Event submitted
 
 Main Flow:
-Moderator opens pending event list
-Moderator reviews event details
-Moderator approves or rejects event
-System updates event status
+	1.	Moderator views pending list
+	2.	Moderator reviews event
+	3.	Moderator approves or rejects
+	4.	System updates status
 
-Postconditions: Event either published or rejected
-Exceptions: Incomplete info → request edits
+Postconditions: Event published or denied
+Exceptions: Missing info → request edits
+
+⸻
 
 Use Case: Edit Events Before Approval
 
 Actor: Moderator
-Goal: Correct unclear or inappropriate event details
+Goal: Fix unclear/inappropriate details
 Preconditions: Event pending review
 
 Main Flow:
-Moderator edits title or description
-System saves revisions
-Moderator finalizes approval decision
+	1.	Moderator edits title/description
+	2.	System saves changes
+	3.	Moderator finalizes approval
 
-Postconditions: Updated event ready for publication
+Postconditions: Event updated
 Exceptions: Invalid edit → show error
+
+⸻
 
 Use Case: Resolve Event Outcomes
 
 Actor: Moderator
-Goal: Finalize result and trigger payouts
+Goal: Finalize results and trigger payouts
 Preconditions: Event concluded
 
 Main Flow:
-Moderator reviews evidence
-Moderator selects correct outcome
-System processes payouts
+	1.	Moderator reviews evidence
+	2.	Moderator selects correct outcome
+	3.	System processes payouts
 
-Postconditions: Winners credited, event closed
-Exceptions: Unclear result → defer resolution
+Postconditions: Winners paid
+Exceptions: Unclear result → delay
 
-Use Case: Reverse Payouts
+⸻
 
-Actor: Moderator
-Goal: Fix incorrect distribution
-Preconditions: Event already resolved
+## System-Level Use Case
 
-Main Flow:
-Moderator selects event
-Moderator triggers reversal
-System restores balances
-System re-applies corrected payout
+⸻
 
-Postconditions: Balances corrected
-Exceptions: Unauthorized action → denied
-
-Use Case: Review Suspicious Reports
-
-Actor: Moderator
-Goal: Investigate potential cheating or abuse
-Preconditions: Reports submitted
-
-Main Flow:
-Moderator opens Reports dashboard
-System displays flagged users/events
-Moderator reviews logs and evidence
-
-Postconditions: Case reviewed and acted upon
-Exceptions: Insufficient data → mark as inconclusive
-
-Use Case: Suspend Accounts
-
-Actor: Moderator
-Goal: Temporarily restrict abusive users
-Preconditions: Verified rule violation
-
-Main Flow:
-Moderator selects user
-Moderator applies restriction
-System blocks access for set duration
-
-Postconditions: User suspended
-Exceptions: Admin override → suspension canceled
-
-Use Case: View Alerts
-
-Actor: Moderator
-Goal: Detect abnormal or suspicious activity
-Preconditions: Monitoring active
-
-Main Flow:
-System generates alerts
-Moderator reviews flagged events
-Moderator follows up if needed
-
-Postconditions: Alerts reviewed or dismissed
-Exceptions: False positive → mark safe
-
-Use Case: Access Moderator Dashboard
-
-Actor: Moderator
-Goal: Manage users and events efficiently
-Preconditions: Logged in
-
-Main Flow:
-Moderator opens dashboard
-System shows overview of pending and active items
-Moderator navigates between tools
-
-Postconditions: Moderator controls platform state
-Exceptions: Dashboard load error → retry
-
-Use Case: Handle Disputes
-
-Actor: Moderator
-Goal: Ensure fairness in event outcomes
-Preconditions: Dispute submitted
-
-Main Flow:
-Moderator reviews dispute
-Moderator checks logs and communications
-Moderator issues decision
-
-Postconditions: Dispute resolved and logged
-Exceptions: Ambiguous data → request clarification
-
-Use Case: Monitor Reward Abuse
-
-Actor: Moderator
-Goal: Prevent exploitation of login or streak bonuses
-Preconditions: Reward data logged
-
-Main Flow:
-System flags unusual reward patterns
-Moderator reviews user history
-Moderator adjusts balances if needed
-
-Postconditions: Reward system integrity maintained
-Exceptions: False alarm → no action taken
-
-Use Case: Access System Logs
-
-Actor: Moderator
-Goal: Investigate major system actions
-Preconditions: Admin privileges granted
-
-Main Flow:
-Moderator opens log viewer
-System displays records of transactions and actions
-Moderator filters and exports data
-
-Postconditions: Logs reviewed for audit
-Exceptions: Missing log entries → notify dev team
-
-System-Level Use-Case Model
 Use Case: Maintain Security and Fairness
 
-Actor: GooseMarket Platform
-Goal: Protect user data and ensure fair play
+Actor: Platform
+Goal: Protect data and ensure fair play
 Preconditions: System operational
 
 Main Flow:
-System enforces secure authentication
-System monitors suspicious activity
-System prevents duplicate or automated actions
-System ensures accurate payout logic
+	1.	System enforces authentication
+	2.	System prevents abuse
+	3.	System monitors suspicious activity
+	4.	System processes payouts accurately
 
 Postconditions: Platform integrity maintained
-Exceptions: Detected breach → trigger security response
+Exceptions: Security breach → trigger response

@@ -14,13 +14,13 @@ so that I can access my GooseMarket profile and balance.
 As a student, I want to receive Goose Dollars for logging in  
 so that I have currency to participate when I start.
 
-As a student, I want to earn Goose Dollars from consistent platform participation (not just login)   
+As a student, I want to earn Goose Dollars from consistent platform participation  
 so that I can continue playing even if I lose my initial balance.
 
 As a student, I want to browse open prediction events  
 so that I can find interesting things to bet on.
 
-As a student, I want to filter events by category or group  
+As a student, I want to filter events by category or name 
 so that I can quickly find events relevant to me.
 
 As a student, I want to view individual event pages  
@@ -44,24 +44,6 @@ so that I can evaluate my performance and progress.
 As a student, I want to see a leaderboard  
 so that I can compare my skills and balance with others.
 
-As a student, I want to join groups (ex: SE, Math, Eng)  
-so that I can compete and discuss predictions within my community.
-
-As a student, I want to subscribe to event tags  
-so that I get updates on categories that interest me.
-
-As a student, I want to see a help/tutorial section  
-so that I can understand how predictions and Goose Dollars work.
-
-As a student, I want tooltips or guidance on the UI  
-so that I can learn features without needing instructions.
-
-As a student, I want to report suspicious events or users  
-so that cheating or abuse can be prevented.
-
-As a student, I want fair and transparent dispute handling  
-so that I trust the event resolution process.
-
 As a student, I want login streak bonuses  
 so that I feel rewarded for returning consistently.
 
@@ -81,29 +63,8 @@ so that I can correct unclear or inappropriate details.
 As an admin, I want to resolve event outcomes  
 so that the platform can distribute payouts correctly.
 
-As an admin, I want to reverse payouts if needed  
-so that incorrect decisions can be fixed.
-
-As an admin, I want to review suspicious events or users  
-so that cheating or manipulation is prevented.
-
-As an admin, I want to temporarily restrict or suspend accounts  
-so that abusive users cannot harm the platform.
-
-As an admin, I want to see alerts for suspicious behavior  
-so that I can quickly detect cheating.
-
 As an admin, I want a dashboard to manage events and users  
 so that I can moderate the platform efficiently.
-
-As an admin, I want to handle disputes submitted by users  
-so that fairness and trust are upheld.
-
-As an admin, I want to monitor login/streak reward abuse  
-so that users cannot exploit the token economy.
-
-As an admin, I want to access logs of major system actions  
-so that I can investigate suspicious behavior if needed.
 
 ---
 
