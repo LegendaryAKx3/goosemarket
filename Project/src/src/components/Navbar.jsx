@@ -48,13 +48,15 @@ export default function Navbar() {
 			<nav className="sticky top-0 z-50 w-full border-b border-slate-800 bg-slate-950/80 backdrop-blur-lg">
 				<div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
 					{/* Left section: Logo + Title */}
-					<div className="flex items-center gap-3">
-						<img src="/goose.png" alt="GooseMarket Logo" className="w-10 h-10 rounded-xl" />
-						<div>
-							<h1 className="text-xl font-bold">GooseMarket</h1>
-							<p className="text-slate-400 text-sm">UWaterloo Predictions</p>
+					<Link to="/dashboard">
+						<div className="flex items-center gap-3">
+							<img src="/goose.png" alt="GooseMarket Logo" className="w-10 h-10 rounded-xl" />
+							<div>
+								<h1 className="text-xl font-bold">GooseMarket</h1>
+								<p className="text-slate-400 text-sm">UWaterloo Predictions</p>
+							</div>
 						</div>
-					</div>
+					</Link>
 
 					{/* Center section: Navigation Links */}
 					<div className="hidden md:flex items-center gap-6">

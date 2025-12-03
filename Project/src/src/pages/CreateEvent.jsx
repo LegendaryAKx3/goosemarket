@@ -28,6 +28,7 @@ export default function CreateEvent() {
 
   const [selectedTags, setSelectedTags] = useState([]);
   const [tagPage, setTagPage] = useState(1);
+  const [tagSearch, setTagSearch] = useState("");
 
   const { data: tags = [], isLoading: tagsLoading } = useQuery({
     queryKey: ["tags"],
@@ -123,8 +124,21 @@ export default function CreateEvent() {
     );
   };
 
-  const totalTagPages = Math.max(1, Math.ceil(tags.length / TAGS_PER_PAGE));
-  const visibleTags = tags.slice((tagPage - 1) * TAGS_PER_PAGE, tagPage * TAGS_PER_PAGE);
+  const filteredTags = tags
+    .filter(t =>
+      tagSearch.trim() === "" ||
+      t.name.toLowerCase().includes(tagSearch.toLowerCase())
+    )
+    .sort((a, b) => {
+      const aSel = selectedTags.includes(a.id);
+      const bSel = selectedTags.includes(b.id);
+      if (aSel && !bSel) return -1;
+      if (!aSel && bSel) return 1;
+      return 0;
+    });
+  const visibleTags = filteredTags.slice((tagPage - 1) * TAGS_PER_PAGE, tagPage * TAGS_PER_PAGE);
+
+  const totalTagPages = Math.max(1, Math.ceil(filteredTags.length / TAGS_PER_PAGE));
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950">
@@ -227,9 +241,39 @@ export default function CreateEvent() {
               {/* Tags */}
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <div>
+                  <div className="w-3/4">
                     <Label className="text-slate-300">Tags</Label>
                     <p className="text-xs text-slate-500">Choose tags that help others find this market.</p>
+                    <div className="relative mt-2 w-full">
+                      <Input
+                        type="text"
+                        placeholder="Search or create tag..."
+                        value={tagSearch}
+                        onChange={(e) => {
+                          setTagSearch(e.target.value);
+                          setTagPage(1);
+                        }}
+                        className="bg-slate-800 border-slate-700 text-white placeholder:text-slate-500 pr-20 w-full"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (tagSearch.trim() === "") return;
+                          const newTag = {
+                            id: Date.now(),
+                            name: tagSearch.trim()
+                          };
+                          tags.push(newTag);
+                          setSelectedTags(prev =>
+                            prev.includes(newTag.id) ? prev : [...prev, newTag.id]
+                          );
+                          setTagSearch("");
+                        }}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-emerald-400 hover:text-emerald-300 text-sm"
+                      >
+                        + create
+                      </button>
+                    </div>
                   </div>
                   <Badge variant="outline" className="border-emerald-600/40 bg-emerald-500/10 text-emerald-100 font-semibold">
                     {selectedTags.length} selected
@@ -241,8 +285,8 @@ export default function CreateEvent() {
                       <Loader2 className="w-4 h-4 animate-spin" />
                       Loading tags...
                     </div>
-                  ) : tags.length === 0 ? (
-                    <p className="text-slate-500 text-sm">No tags available yet.</p>
+                  ) : filteredTags.length === 0 ? (
+                    <p className="text-slate-500 text-sm">No matching tags. Use the button above to create it.</p>
                   ) : (
                     visibleTags.map((tag) => {
                       const isActive = selectedTags.includes(tag.id);

@@ -22,7 +22,7 @@ export default function EventCard({ event, pollStats }) {
   const percentFromPrice = (value) => {
     if (value === null || value === undefined) return 50;
     // API returns ints in [0,100]; fall back to scaling if we ever receive 0-1 floats
-    if (value > 1) return Math.round(value);
+    if (value >= 1) return Math.round(value);
     return Math.round(value * 100);
   };
 
@@ -41,7 +41,7 @@ export default function EventCard({ event, pollStats }) {
 			<div className="relative p-5 space-y-4">
 				{/* Header */}
 				<div className="flex items-start justify-between gap-3">
-					<div className="flex gap-2 mt-2 max-w-[75%] overflow-x-auto overflow-y-hidden whitespace-nowrap -ms-overflow-style-none scrollbar-hide">
+					<div className="flex gap-2 mt-2 max-w-[75%] overflow-x-auto overflow-y-hidden whitespace-nowrap -ms-overflow-style-none no-scrollbar">
 						{event.has_ended && <Badge variant="outline" className="inline-block bg-red-500/40 text-slate-400 border-slate-500/20 border">Closed</Badge>}
 						{event.tags?.filter(tag => tag !== "Closed").map((tag) => (
 						<Badge key={tag} variant="outline" className="inline-block bg-slate-500/10 text-slate-400 border-slate-500/20 border">

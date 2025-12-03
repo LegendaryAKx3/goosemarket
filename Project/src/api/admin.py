@@ -390,19 +390,13 @@ def resolve_poll():
         
         ended_at_dt = datetime.fromisoformat(ended_at.data[0]["ends_at"].replace("Z", "+00:00"))
 
-        trades = supabase.table("trades").select("user_id, num_shares").eq("poll_id", poll_id).eq("outcome", outcome).lt("timestamp", ended_at_dt).execute()
+        valid_trades = supabase.table("trades").select("user_id, num_shares").eq("poll_id", poll_id).eq("outcome", outcome).lt("timestamp", ended_at_dt).execute()
+        rollback_trades = supabase.table("trades").select("user_id, share_price").eq("poll_id", poll_id).gt("timestamp", ended_at_dt).execute()
 
         payouts = {}
 
-        for trade in trades.data:
-            user_id = trade["user_id"]
-            payouts[user_id] = payouts.get(user_id, 0) + trade["num_shares"]
-        
-        for user_id, shares in payouts.items():
-            supabase.rpc("increment_balance", {
-                "user_id": user_id,
-                "amount": shares * 100
-            }).execute()
+        # Only used to update the current user's balance visually without having to log out and in again
+        cur_user_payout = 0
 
         #Get the current user's position to update navbar
         token = request.cookies.get("sb-access-token")
@@ -416,13 +410,32 @@ def resolve_poll():
 
         if not claims or not claims.get("claims").get("email"):
             return jsonify({"message": "Poll resolved successfully", "user_profit": 0})
-
-        profile = supabase.table("profiles").select("id").eq("email", claims.get("claims").get("email")).single().execute()
-        if not profile.data:
-            return jsonify({"message": "Poll resolved successfully", "user_profit": 0})
         
+        profile = supabase.table("profiles").select("id").eq("email", claims.get("claims").get("email")).single().execute()
         cur_user = profile.data["id"]
-        return jsonify({"message": "Poll resolved successfully", "user_profit": 100*payouts.get(cur_user, 0)})
+
+        for trade in valid_trades.data:
+            user_id = trade["user_id"]
+            payouts[user_id] = payouts.get(user_id, 0) + trade["num_shares"]
+        
+        for user_id, shares in payouts.items():
+            supabase.rpc("increment_balance", {
+                "user_id": user_id,
+                "amount": shares * 100
+            }).execute()
+            if profile.data and user_id == cur_user:
+                cur_user_payout += 100*shares
+        
+        # Refund users who traded after the rollback time
+        for trade in rollback_trades.data:
+            supabase.rpc("increment_balance", {
+                "user_id": trade["user_id"],
+                "amount": trade["share_price"]
+            }).execute()
+            if profile.data and user_id == cur_user:
+                cur_user_payout += trade["share_price"]
+
+        return jsonify({"message": "Poll resolved successfully", "user_profit": cur_user_payout})
         
     except Exception as e:
         return jsonify({"error": f"Server error: {str(e)}"}), 500

@@ -239,7 +239,7 @@ export default function EventDetail() {
 	const getPercent = (value) => {
 		if (value === null || value === undefined) return 50;
 		// API returns ints (0-100). If we ever get 0-1 floats, scale up.
-		if (value > 1) return Math.round(value);
+		if (value >= 1) return Math.round(value);
 		return Math.round(value * 100);
 	};
 	const yesPercent = getPercent(event?.price_yes);
@@ -387,7 +387,7 @@ export default function EventDetail() {
 											/>
 										</div>
 										<div className="flex items-center justify-between text-sm">
-											<span className="text-slate-400">Estimated Cost:</span>
+											<span className="text-slate-400">{isBuy ? "Estimated Cost:" : "Estimated Gain:"}</span>
 											<span className={`${isBuy ? "text-red-400" : "text-emerald-400"} font-semibold`}>
 												{estimateQuery.isFetching
 													? "..."

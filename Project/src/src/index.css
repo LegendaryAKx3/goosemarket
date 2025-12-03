@@ -67,6 +67,16 @@
   }
 }
 
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
 /* Subtle dark overscroll backdrop that matches the app theme */
 html, body {
   background-color: #050915;

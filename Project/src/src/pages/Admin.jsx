@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Shield, Check, X, Clock } from "lucide-react";
 import { format } from "date-fns";
@@ -17,6 +18,33 @@ export default function Admin() {
     tags: "",
     ends_at: ""
   });
+  const [editingEndedAt, setEditingEndedAt] = useState(null);
+  const [newEndedAt, setNewEndedAt] = useState("");
+  const handleUpdateEndedAt = async () => {
+    try {
+      await fetch("/api/admin/update", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          poll_id: editingEndedAt.id,
+          ends_at: new Date(newEndedAt).toISOString()
+        })
+      });
+
+      setResolveEvents(prev =>
+        prev.map(e =>
+          e.id === editingEndedAt.id
+            ? { ...e, ended_at: newEndedAt }
+            : e
+        )
+      );
+
+      setEditingEndedAt(null);
+      setNewEndedAt("");
+    } catch (err) {
+      console.error("Failed to update ended_at:", err);
+    }
+  };
   const [viewMode, setViewMode] = useState("review");
   const { incrementBalance } = useAuth();
 
@@ -88,7 +116,7 @@ export default function Admin() {
           title: editValues.title,
           description: editValues.description,
           tags: editValues.tags.split(",").map(x => x.trim()).filter(Boolean),
-          ends_at: editValues.ends_at
+          ends_at: editValues.ends_at ? new Date(editValues.ends_at).toISOString() : null
         })
       });
 
@@ -196,7 +224,7 @@ export default function Admin() {
         {/* Pending Events */}
         <Card className="border-slate-800 bg-slate-900/50">
           <CardHeader>
-            <CardTitle className="text-white">Pending Market Submissions</CardTitle>
+            <CardTitle className="text-white">{viewMode === "review" ? "Pending Market Submissions" : "Pending Resolution"}</CardTitle>
           </CardHeader>
           <CardContent>
             {isLoading ? (
@@ -255,7 +283,16 @@ export default function Admin() {
                           </div>
                         ) : (
                           <div className="flex items-center gap-4 text-sm text-slate-500">
-                            <span>Ended: {format(new Date(event.ended_at), "MMM d, yyyy 'at' h:mm a")}</span>
+                        <span>Ended: {format(new Date(event.ended_at), "MMM d, yyyy 'at' h:mm a")}</span>
+                        <Button
+                          onClick={() => {
+                            setEditingEndedAt(event);
+                            setNewEndedAt(event.ended_at ? format(new Date(event.ended_at), "yyyy-MM-dd'T'HH:mm") : "");
+                          }}
+                          className="text-slate-500 bg-transparent hover:text-white hover:bg-transparent"
+                        >
+                          [edit]
+                        </Button>
                             <span>•</span>
                             <span>Traders: {event.num_traders}</span>
                             <span>•</span>
@@ -347,8 +384,14 @@ export default function Admin() {
         </Card>
       </div>
       {editingEvent && (
-        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex justify-center items-center z-50">
-          <div className="bg-slate-900 p-6 rounded-lg w-full max-w-lg border border-slate-700">
+        <div
+          className="fixed inset-0 bg-black/70 backdrop-blur-sm flex justify-center items-center z-50"
+          onClick={() => setEditingEvent(null)}
+        >
+          <div
+            className="bg-slate-900 p-6 rounded-lg w-full max-w-lg border border-slate-700"
+            onClick={(e) => e.stopPropagation()}
+          >
             <h2 className="text-xl font-semibold text-white mb-4">Edit Market</h2>
 
             <div className="space-y-4">
@@ -384,7 +427,11 @@ export default function Admin() {
                 <input
                   type="datetime-local"
                   className="w-full mt-1 p-2 rounded bg-slate-800 text-white"
-                  value={editValues.ends_at ? editValues.ends_at.slice(0, 16) : ""}
+                  value={
+                    editValues.ends_at
+                      ? format(new Date(editValues.ends_at), "yyyy-MM-dd'T'HH:mm")
+                      : ""
+                  }
                   onChange={(e) => setEditValues({ ...editValues, ends_at: e.target.value })}
                 />
               </div>
@@ -407,6 +454,48 @@ export default function Admin() {
           </div>
         </div>
       )}
+    {editingEndedAt && (
+      <div
+        className="fixed inset-0 bg-black/70 backdrop-blur-sm flex justify-center items-center z-50"
+        onClick={() => {
+          setEditingEndedAt(null);
+          setNewEndedAt("");
+        }}
+      >
+        <div
+          className="bg-slate-900 p-6 rounded-lg w-full max-w-sm border border-slate-700"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <h2 className="text-xl font-semibold text-white mb-4">Edit Ended Date</h2>
+
+          <input
+            type="datetime-local"
+            className="w-full mt-1 p-2 rounded bg-slate-800 text-white"
+            value={newEndedAt}
+            onChange={(e) => setNewEndedAt(e.target.value)}
+          />
+
+          <div className="flex gap-3 mt-6">
+            <Button
+              onClick={() => {
+                setEditingEndedAt(null);
+                setNewEndedAt("");
+              }}
+              className="flex-1 bg-slate-700 hover:bg-slate-600"
+            >
+              Cancel
+            </Button>
+
+            <Button
+              onClick={handleUpdateEndedAt}
+              className="flex-1 bg-blue-600 hover:bg-blue-700"
+            >
+              Confirm
+            </Button>
+          </div>
+        </div>
+      </div>
+    )}
     </div>
   );
 }
