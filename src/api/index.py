@@ -199,4 +199,6 @@ def get_user_count_route():
     """Retrieve a count of users"""
     return calculate_total_users()
 
-app.run(port=5328, debug=True)
+if __name__ == "__main__":
+    # Only run the dev server when executing directly; avoid starting it during imports (e.g., serverless)
+    app.run(port=5328, debug=True)
