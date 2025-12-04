@@ -2,9 +2,10 @@ import pytest
 import sys
 import os
 from unittest.mock import MagicMock, patch
-from src.api.admin import get_unapproved_polls, approve_poll, update_poll
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "src")))
+
+from api.admin import get_unapproved_polls, approve_poll, update_poll
 
 
 class FakeResponse:
@@ -14,7 +15,7 @@ class FakeResponse:
 
 @pytest.fixture
 def mock_supabase():
-    with patch("database.get_supabase") as mock_get_supabase:
+    with patch("api.admin.get_supabase") as mock_get_supabase:
         fake_client = MagicMock()
         mock_get_supabase.return_value = fake_client
         yield fake_client

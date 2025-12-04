@@ -1,5 +1,5 @@
 from flask import request, jsonify
-from database import get_supabase
+from api.database import get_supabase
 from api.positions import get_positions
 
 

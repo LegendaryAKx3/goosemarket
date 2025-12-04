@@ -5,7 +5,7 @@ import os
 
 # Add parent directory to path to import database module
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-from database import get_supabase
+from api.database import get_supabase
 
 # Import AMM functions
 from api.amm import _aggregate_positions, _compute_b_ls_lmsr, _lmsr_prices, B0

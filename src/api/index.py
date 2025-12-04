@@ -6,7 +6,7 @@ import os
 
 # Add parent directory to path to import database module
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from database import get_supabase
+from api.database import get_supabase
 
 from api.auth import login, register, verify_email, verify_token
 

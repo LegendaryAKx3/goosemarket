@@ -4,7 +4,7 @@ import os
 
 # Allow imports of shared modules
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-from database import get_supabase  # noqa: E402
+from api.database import get_supabase  # noqa: E402
 
 from api.amm import (  # noqa: E402
     _aggregate_positions,

@@ -1,7 +1,7 @@
 from flask import request, jsonify
 from datetime import datetime, timezone, date
 from collections import defaultdict
-from database import get_supabase
+from api.database import get_supabase
 from api.amm import quote_and_cost_ls_lmsr, B0
 from api.polls import get_poll_data
 

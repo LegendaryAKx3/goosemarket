@@ -1,5 +1,5 @@
 from flask import request, jsonify
-from database import get_supabase
+from api.database import get_supabase
 
 def get_leaderboard(num_users):
     """Returns the top users by balance
