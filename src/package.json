@@ -4,7 +4,7 @@
 	"version": "0.0.0",
 	"type": "module",
 	"scripts": {
-		"dev": "concurrently --kill-others 'vite --host' 'python3 api/index.py'",
+		"dev": "concurrently --kill-others \"vite --host\" \"python api/index.py\"",
 		"build": "vite build",
 		"lint": "eslint .",
 		"preview": "vite preview"
